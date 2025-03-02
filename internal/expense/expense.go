@@ -105,33 +105,33 @@ func (e *ExpenseList) Add(description string, amount float64) error {
 // The expense item to be updated is identified by its id (1-based index).
 // If a new non-empty description is provided, it updates the description and sets the current date and time.
 // If a new non-negative amount is provided, it updates the amount and sets the current date and time.
-// Returns an error if the provided id is out of range.
+// Returns an error if the provided position is out of range.
 //
 // Parameters:
-//   - id: The 1-based index of the expense item to be updated.
+//   - pos: The 1-based position of the expense to be updated.
 //   - description: The new description for the expense item. If empty, the description is not updated.
 //   - amount: The new amount for the expense item. If negative, the amount is not updated.
 //
 // Returns:
-//   - error: An error if the provided id is out of range, otherwise nil.
-func (e *ExpenseList) Update(id int, description string, amount float64) error {
+//   - error: An error if the provided position is out of range, otherwise nil.
+func (e *ExpenseList) Update(pos int, description string, amount float64) error {
 	expenseList := *e
 
 	// Check if the provided id is within the range.
-	if id < 1 || id > len(expenseList) {
-		return errors.New("invalid id")
+	if pos < 1 || pos > len(expenseList) {
+		return errors.New("invalid position: position is out of range")
 	}
 
 	// Update description only if new non-empty description is provided.
-	if description != "" && expenseList[id-1].Description != strings.ToLower(description) {
-		expenseList[id-1].Description = strings.ToLower(description)
-		expenseList[id-1].Date = time.Now()
+	if description != "" && expenseList[pos-1].Description != strings.ToLower(description) {
+		expenseList[pos-1].Description = strings.ToLower(description)
+		expenseList[pos-1].Date = time.Now()
 	}
 
 	// Update amount only if new non-negative amount is provided.
-	if amount >= 0 && expenseList[id-1].Amount != amount {
-		expenseList[id-1].Amount = amount
-		expenseList[id-1].Date = time.Now()
+	if amount >= 0 && expenseList[pos-1].Amount != amount {
+		expenseList[pos-1].Amount = amount
+		expenseList[pos-1].Date = time.Now()
 	}
 
 	return nil
