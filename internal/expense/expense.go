@@ -136,3 +136,22 @@ func (e *ExpenseList) Update(id int, description string, amount float64) error {
 
 	return nil
 }
+
+// Delete removes an expense from the ExpenseList at the specified position.
+// The position is 1-based, meaning the first element is at position 1.
+// If the position is out of range, it returns an error indicating an invalid position.
+//
+// Parameters:
+// - pos: The 1-based position of the expense to be removed.
+//
+// Returns:
+// - error: An error if the position is out of range, otherwise nil.
+func (e *ExpenseList) Delete(pos int) error {
+	expenseList := *e
+	if pos < 1 || pos > len(expenseList) {
+		return errors.New("invalid position: position is out of range")
+	}
+
+	*e = append(expenseList[:pos-1], expenseList[pos:]...)
+	return nil
+}
