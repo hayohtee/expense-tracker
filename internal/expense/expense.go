@@ -3,12 +3,10 @@ package expense
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"time"
 )
-
-// defaultFileName is the name of the file where the expense tracker data is stored.
-const defaultFileName = ".expense_tracker.json"
 
 // expense represents a single expense entry with an ID, date, description, and amount.
 type expense struct {
@@ -21,14 +19,27 @@ type expense struct {
 // ExpenseList represents a list of expenses.
 type ExpenseList []expense
 
-// Load reads the expense data from a JSON file and decodes it into the ExpenseList.
-// It returns an error if the file cannot be opened or if the decoding fails.
-func (e *ExpenseList) Load() error {
-	file, err := os.Open(defaultFileName)
+// Load reads expense data from the specified file and loads it into the ExpenseList.
+// The filename parameter specifies the path to the file to be loaded.
+// It returns an error if there is any issue reading or parsing the file.
+func (e *ExpenseList) Load(filename string) error {
+	// Read the contents of the file using os.ReadFile
+	content, err := os.ReadFile(filename)
 	if err != nil {
-		return err
+		switch {
+		// Skip if the file does not exist.
+		case errors.Is(err, os.ErrNotExist):
+			return nil
+		default:
+			return err
+		}
 	}
-	defer file.Close()
 
-	return json.NewDecoder(file).Decode(e)
+	// Simply skip if the contents of the file is empty.
+	if len(content) == 0 {
+		return nil
+	}
+
+	// Parse the json contents into list of expense struct.
+	return json.Unmarshal(content, e)
 }
