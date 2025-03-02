@@ -190,3 +190,31 @@ func (e *ExpenseList) Summary(out io.Writer) {
 	summary := fmt.Sprintf("Total expenses: $%.2f\n", total)
 	out.Write([]byte(summary))
 }
+
+// SummaryForMonth writes a summary of the total expenses for a given month to the provided writer.
+// The month parameter should be an integer between 1 and 12, representing the months January to December.
+// If the month is out of range, an error is returned.
+// The summary includes the total amount of expenses for the specified month.
+//
+// Parameters:
+//   w - an io.Writer where the summary will be written
+//   month - an integer representing the month (1 for January, 12 for December)
+//
+// Returns:
+//   error - an error if the month is out of range, otherwise nil
+func (e *ExpenseList) SummaryForMonth(w io.Writer, month int) error {
+	if month < 1 || month > 12 {
+		return errors.New("invalid month: month is out of range")
+	}
+
+	var total float64 = 0
+	for _, item := range *e {
+		if item.Date.Month() == time.Month(month) {
+			total += item.Amount
+		}
+	}
+
+	summary := fmt.Sprintf("Total expenses for %s: $%.2f\n", time.Month(month).String(), total)
+	w.Write([]byte(summary))
+	return nil
+}
