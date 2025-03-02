@@ -166,9 +166,27 @@ func (e *ExpenseList) List(out io.Writer) {
 	buf.WriteString(header)
 
 	for _, item := range *e {
-		value := fmt.Sprintf("%6d%12s%14s%.00f\n", item.ID, item.Date.Format("2006-01-02"), item.Description, item.Amount)
+		value := fmt.Sprintf("%6d%12s%14s$%.2f\n", item.ID, item.Date.Format("2006-01-02"), item.Description, item.Amount)
 		buf.WriteString(value)
 	}
 
 	out.Write(buf.Bytes())
+}
+
+// Summary writes a summary of the total expenses to the provided io.Writer.
+// It calculates the total amount of all expenses in the ExpenseList and
+// writes the formatted summary string to the output writer.
+//
+// Parameters:
+//
+//	out (io.Writer): The writer to which the summary will be written.
+func (e *ExpenseList) Summary(out io.Writer) {
+	var total float64 = 0
+
+	for _, item := range *e {
+		total += item.Amount
+	}
+
+	summary := fmt.Sprintf("Total expenses: $%.2f\n", total)
+	out.Write([]byte(summary))
 }
