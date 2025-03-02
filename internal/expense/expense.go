@@ -160,7 +160,7 @@ func (e *ExpenseList) Delete(pos int) error {
 }
 
 // List writes the expense list to the provided io.Writer in a tabular format.
-func (e *ExpenseList) List(out io.Writer) {
+func (e *ExpenseList) List(w io.Writer) {
 	header := "ID    Date        Description   Amount\n"
 	var buf bytes.Buffer
 	buf.WriteString(header)
@@ -170,7 +170,7 @@ func (e *ExpenseList) List(out io.Writer) {
 		buf.WriteString(value)
 	}
 
-	out.Write(buf.Bytes())
+	w.Write(buf.Bytes())
 }
 
 // Summary writes a summary of the total expenses to the provided io.Writer.
@@ -179,8 +179,8 @@ func (e *ExpenseList) List(out io.Writer) {
 //
 // Parameters:
 //
-//	out (io.Writer): The writer to which the summary will be written.
-func (e *ExpenseList) Summary(out io.Writer) {
+//	w (io.Writer): The writer to which the summary will be written.
+func (e *ExpenseList) Summary(w io.Writer) {
 	var total float64 = 0
 
 	for _, item := range *e {
@@ -188,7 +188,7 @@ func (e *ExpenseList) Summary(out io.Writer) {
 	}
 
 	summary := fmt.Sprintf("Total expenses: $%.2f\n", total)
-	out.Write([]byte(summary))
+	w.Write([]byte(summary))
 }
 
 // SummaryForMonth writes a summary of the total expenses for a given month to the provided writer.
