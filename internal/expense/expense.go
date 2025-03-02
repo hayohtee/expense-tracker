@@ -2,8 +2,11 @@
 package expense
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -154,4 +157,18 @@ func (e *ExpenseList) Delete(pos int) error {
 
 	*e = append(expenseList[:pos-1], expenseList[pos:]...)
 	return nil
+}
+
+// List writes the expense list to the provided io.Writer in a tabular format.
+func (e *ExpenseList) List(out io.Writer) {
+	header := "ID    Date        Description   Amount\n"
+	var buf bytes.Buffer
+	buf.WriteString(header)
+
+	for _, item := range *e {
+		value := fmt.Sprintf("%6d%12s%14s%.00f\n", item.ID, item.Date.Format("2006-01-02"), item.Description, item.Amount)
+		buf.WriteString(value)
+	}
+
+	out.Write(buf.Bytes())
 }
