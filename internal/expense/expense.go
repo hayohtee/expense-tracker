@@ -3,6 +3,9 @@ package expense
 
 import "time"
 
+// defaultFileName is the name of the file where the expense tracker data is stored.
+const defaultFileName = ".expense_tracker.json"
+
 // expense represents a single expense entry with an ID, date, description, and amount.
 type expense struct {
 	ID          int       `json:"id"`          // Unique identifier for the expense
