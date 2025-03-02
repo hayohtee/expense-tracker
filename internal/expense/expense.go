@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -59,4 +60,43 @@ func (e *ExpenseList) Save(filename string) error {
 		return err
 	}
 	return os.WriteFile(filename, js, 0644)
+}
+
+// Add adds a new expense to the ExpenseList with the given description and amount.
+// It returns an error if the description is empty or the amount is negative.
+//
+// Parameters:
+//   - description: A string representing the description of the expense.
+//   - amount: A float64 representing the amount of the expense.
+//
+// Returns:
+//   - error: An error if the description is empty or the amount is negative, otherwise nil.
+func (e *ExpenseList) Add(description string, amount float64) error {
+	if description == "" {
+		return errors.New("description is empty")
+	}
+
+	if amount < 0 {
+		return errors.New("negative amount")
+	}
+
+	expenseList := *e
+
+	// Calculate the next id by adding the last expense id + 1
+	var id int
+	if len(expenseList) == 0 {
+		id = 1
+	} else {
+		id = expenseList[len(expenseList)-1].ID + 1
+	}
+
+	item := expense{
+		ID:          id,
+		Date:        time.Now(),
+		Description: strings.ToLower(description),
+		Amount:      amount,
+	}
+
+	*e = append(*e, item)
+	return nil
 }
