@@ -43,3 +43,20 @@ func (e *ExpenseList) Load(filename string) error {
 	// Parse the json contents into list of expense struct.
 	return json.Unmarshal(content, e)
 }
+
+// Save serializes the ExpenseList to JSON format and writes it to the specified file.
+// The JSON data is indented for readability.
+// The file is created with read-write permissions for the owner and read-only permissions for others.
+//
+// Parameters:
+//   - filename: The name of the file where the JSON data will be saved.
+//
+// Returns:
+//   - error: An error if the JSON marshaling or file writing fails, otherwise nil.
+func (e *ExpenseList) Save(filename string) error {
+	js, err := json.MarshalIndent(e, "", "\t")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filename, js, 0644)
+}
