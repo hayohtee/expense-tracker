@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"slices"
 )
 
 // expense represents a single expense entry with an ID, date, description, and amount.
@@ -155,7 +156,7 @@ func (e *ExpenseList) Delete(pos int) error {
 		return errors.New("invalid position: position is out of range")
 	}
 
-	*e = append(expenseList[:pos-1], expenseList[pos:]...)
+	*e = slices.Delete(expenseList, pos-1, pos)
 	return nil
 }
 
