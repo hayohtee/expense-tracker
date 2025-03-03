@@ -1,8 +1,10 @@
 package expense_test
 
 import (
+	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/hayohtee/expense-tracker/internal/expense"
 )
@@ -43,5 +45,54 @@ func TestSaveAndLoad(t *testing.T) {
 	expected := expenseList[0].String()
 	if newExpenseList[0].String() != expected {
 		t.Errorf("expected %q, but got %q instead", expected, newExpenseList[0].String())
+	}
+}
+
+func TestAdd(t *testing.T) {
+	var expenseList expense.ExpenseList
+	
+	testCases := []struct {
+		description string
+		amount      float64
+		expected    string
+	}{
+		{
+			description: "Demo Expense 1",
+			amount:      100,
+			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 1, "demo expense 1", time.Now().Format("2006-01-02"), 100.0),
+		},
+
+		{
+			description: "Demo Expense 2",
+			amount:      150,
+			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 2, "demo expense 2", time.Now().Format("2006-01-02"), 150.0),
+		},
+		{
+			description: "Demo Expense 3",
+			amount:      250,
+			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 3, "demo expense 3", time.Now().Format("2006-01-02"), 250.0),
+		},
+		{
+			description: "Demo Expense 4",
+			amount:      1150,
+			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 4, "demo expense 4", time.Now().Format("2006-01-02"), 1150.0),
+		},
+		{
+			description: "Demo Expense 5",
+			amount:      50.90,
+			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 5, "demo expense 5", time.Now().Format("2006-01-02"), 50.90),
+		},
+	}
+	
+	for index, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			if err := expenseList.Add(tc.description, tc.amount); err != nil {
+				t.Fatal(err)
+			}
+			
+			if expenseList[index].String() != tc.expected {
+				t.Errorf("expected %q, but got %q instead", tc.expected, expenseList[index].String())
+			} 
+		})
 	}
 }
