@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 	"strings"
 	"time"
-	"slices"
 )
 
 // expense represents a single expense entry with an ID, date, description, and amount.
@@ -19,6 +19,11 @@ type expense struct {
 	Date        time.Time `json:"date"`        // Date when the expense was incurred
 	Description string    `json:"description"` // Description of the expense
 	Amount      float64   `json:"amount"`      // Amount of the expense
+}
+
+// String returns the string representation of expense struct.
+func (e expense) String() string {
+	return fmt.Sprintf("(%d\t%s\t%s\t%.2f)", e.ID, e.Date.Format("2006-01-02"), e.Description, e.Amount)
 }
 
 // ExpenseList represents a list of expenses.
@@ -198,11 +203,13 @@ func (e *ExpenseList) Summary(w io.Writer) {
 // The summary includes the total amount of expenses for the specified month.
 //
 // Parameters:
-//   w - an io.Writer where the summary will be written
-//   month - an integer representing the month (1 for January, 12 for December)
+//
+//	w - an io.Writer where the summary will be written
+//	month - an integer representing the month (1 for January, 12 for December)
 //
 // Returns:
-//   error - an error if the month is out of range, otherwise nil
+//
+//	error - an error if the month is out of range, otherwise nil
 func (e *ExpenseList) SummaryForMonth(w io.Writer, month int) error {
 	if month < 1 || month > 12 {
 		return errors.New("invalid month: month is out of range")
