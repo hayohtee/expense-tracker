@@ -23,7 +23,7 @@ type expense struct {
 
 // String returns the string representation of expense struct.
 func (e expense) String() string {
-	return fmt.Sprintf("(%d\t%s\t%s\t%.2f)", e.ID, e.Date.Format("2006-01-02"), e.Description, e.Amount)
+	return fmt.Sprintf("%d\t%s\t%s\t%.2f", e.ID, e.Description, e.Date.Format("2006-01-02"), e.Amount)
 }
 
 // ExpenseList represents a list of expenses.
