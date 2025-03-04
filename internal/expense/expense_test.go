@@ -210,3 +210,27 @@ func TestList(t *testing.T) {
 		t.Errorf("expected %q\n, but got %q instead", expectedBuf.String(), gotBuf.String())
 	}
 }
+
+func TestSummary(t *testing.T) {
+	var expenseList expense.ExpenseList
+
+	// Add some expenses.
+	if err := expenseList.Add("Demo Expense 1", 100); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 2", 150); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 3", 150); err != nil {
+		t.Fatal(err)
+	}
+
+	expected := fmt.Sprintf("Total expenses: $%.2f\n", (100.0 + 150.0 + 150.00))
+
+	var buf bytes.Buffer
+	expenseList.Summary(&buf)
+
+	if expected != buf.String() {
+		t.Errorf("expected %q, but got %q instead", expected, buf.String())
+	}
+}
