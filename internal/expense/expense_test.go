@@ -123,3 +123,60 @@ func TestUpdate(t *testing.T) {
 		t.Errorf("expected %q, but got %q instead", expected, expenseList[1].String())
 	}
 }
+
+func TestDelete(t *testing.T) {
+	var expenseList expense.ExpenseList
+
+	// Add some expenses.
+	if err := expenseList.Add("Demo Expense 1", 100); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 2", 150); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 3", 150); err != nil {
+		t.Fatal(err)
+	}
+
+	// Delete the second expense item.
+	if err := expenseList.Delete(2); err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert that the expense item has been deleted.
+	if len(expenseList) != 2 {
+		t.Errorf("expected length of the expense list: %d, but got %d instead", 2, len(expenseList))
+	}
+
+	// Assert the first is the same.
+	expected := fmt.Sprintf("%-6d%-14s%-25s$%.2f", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0)
+	if expenseList[0].String() != expected {
+		t.Errorf("expected %q, but got %q instead", expected, expenseList[0].String())
+	}
+
+	// Assert the last expense is the same.
+	expected = fmt.Sprintf("%-6d%-14s%-25s$%.2f", 3, time.Now().Format("2006-01-02"), "demo expense 3", 150.0)
+	if expenseList[1].String() != expected {
+		t.Errorf("expected %q, but got %q instead", expected, expenseList[1].String())
+	}
+
+	// Delete the last expense item.
+	if err := expenseList.Delete(2); err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert that the expense item has been deleted.
+	if len(expenseList) != 1 {
+		t.Errorf("expected length of the expense list: %d, but got %d instead", 1, len(expenseList))
+	}
+
+	// Delete the remaining expense item.
+	if err := expenseList.Delete(1); err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert the expense list is empty.
+	if len(expenseList) != 0 {
+		t.Errorf("expected length of the expense list: %d, but got %d instead", 0, len(expenseList))
+	}
+}
