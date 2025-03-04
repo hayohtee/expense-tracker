@@ -234,3 +234,28 @@ func TestSummary(t *testing.T) {
 		t.Errorf("expected %q, but got %q instead", expected, buf.String())
 	}
 }
+
+func TestSummaryForMonth(t *testing.T) {
+	var expenseList expense.ExpenseList
+	
+	// Add some expenses.
+	if err := expenseList.Add("Demo Expense 1", 100); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 2", 150); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 3", 150); err != nil {
+		t.Fatal(err)
+	}
+	
+	currentMonth := time.Now().Month()
+	expected := fmt.Sprintf("Total expenses for %s: $%.2f\n", currentMonth.String(), (100.0 + 150.0 + 150.0))
+	
+	var buf bytes.Buffer
+	expenseList.SummaryForMonth(&buf, int(currentMonth))
+	
+	if expected != buf.String() {
+		t.Errorf("expected %q, but got %q instead", expected, buf.String())
+	}
+}
