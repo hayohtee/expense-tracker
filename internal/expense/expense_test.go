@@ -1,6 +1,7 @@
 package expense_test
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"testing"
@@ -178,5 +179,34 @@ func TestDelete(t *testing.T) {
 	// Assert the expense list is empty.
 	if len(expenseList) != 0 {
 		t.Errorf("expected length of the expense list: %d, but got %d instead", 0, len(expenseList))
+	}
+}
+
+func TestList(t *testing.T) {
+	var expenseList expense.ExpenseList
+
+	// Add some expenses.
+	if err := expenseList.Add("Demo Expense 1", 100); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 2", 150); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 3", 150); err != nil {
+		t.Fatal(err)
+	}
+
+	var expectedBuf bytes.Buffer
+	expectedBuf.WriteString(fmt.Sprintf("%-6s%-14s%-25s%s\n", "ID", "Date", "Description", "Amount"))
+	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-25s$%.2f\n", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0))
+	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-25s$%.2f\n", 2, time.Now().Format("2006-01-02"), "demo expense 2", 150.0))
+	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-25s$%.2f\n", 3, time.Now().Format("2006-01-02"), "demo expense 3", 150.0))
+
+	var gotBuf bytes.Buffer
+
+	expenseList.List(&gotBuf)
+
+	if expectedBuf.String() != gotBuf.String() {
+		t.Errorf("expected %q\n, but got %q instead", expectedBuf.String(), gotBuf.String())
 	}
 }
