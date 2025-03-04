@@ -50,7 +50,7 @@ func TestSaveAndLoad(t *testing.T) {
 
 func TestAdd(t *testing.T) {
 	var expenseList expense.ExpenseList
-	
+
 	testCases := []struct {
 		description string
 		amount      float64
@@ -59,40 +59,67 @@ func TestAdd(t *testing.T) {
 		{
 			description: "Demo Expense 1",
 			amount:      100,
-			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 1, "demo expense 1", time.Now().Format("2006-01-02"), 100.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0),
 		},
 
 		{
 			description: "Demo Expense 2",
 			amount:      150,
-			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 2, "demo expense 2", time.Now().Format("2006-01-02"), 150.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 2, time.Now().Format("2006-01-02"), "demo expense 2", 150.0),
 		},
 		{
 			description: "Demo Expense 3",
 			amount:      250,
-			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 3, "demo expense 3", time.Now().Format("2006-01-02"), 250.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 3, time.Now().Format("2006-01-02"), "demo expense 3", 250.0),
 		},
 		{
 			description: "Demo Expense 4",
 			amount:      1150,
-			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 4, "demo expense 4", time.Now().Format("2006-01-02"), 1150.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 4, time.Now().Format("2006-01-02"), "demo expense 4", 1150.0),
 		},
 		{
 			description: "Demo Expense 5",
 			amount:      50.90,
-			expected:    fmt.Sprintf("%d\t%s\t%s\t%.2f", 5, "demo expense 5", time.Now().Format("2006-01-02"), 50.90),
+			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 5, time.Now().Format("2006-01-02"), "demo expense 5", 50.90),
 		},
 	}
-	
+
 	for index, tc := range testCases {
 		t.Run(tc.description, func(t *testing.T) {
 			if err := expenseList.Add(tc.description, tc.amount); err != nil {
 				t.Fatal(err)
 			}
-			
+
 			if expenseList[index].String() != tc.expected {
 				t.Errorf("expected %q, but got %q instead", tc.expected, expenseList[index].String())
-			} 
+			}
 		})
+	}
+}
+
+func TestUpdate(t *testing.T) {
+	var expenseList expense.ExpenseList
+
+	// Add some expenses.
+	if err := expenseList.Add("Demo Expense 1", 100); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 2", 150); err != nil {
+		t.Fatal(err)
+	}
+	if err := expenseList.Add("Demo Expense 3", 150); err != nil {
+		t.Fatal(err)
+	}
+
+	// Update the second expense item.
+	if err := expenseList.Update(2, "New Demo Expense 2", 500); err != nil {
+		t.Fatal(err)
+	}
+
+	expected := fmt.Sprintf("%-6d%-14s%-25s$%.2f", 2, time.Now().Format("2006-01-02"), "new demo expense 2", 500.0)
+
+	// Assert the second expense item was updated successfully.
+	if expenseList[1].String() != expected {
+		t.Errorf("expected %q, but got %q instead", expected, expenseList[1].String())
 	}
 }
