@@ -64,11 +64,90 @@ func TestExpenseTracker(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			expected := fmt.Sprintf("Expense added successfully (ID: %d)\n", index + 1)
+			expected := fmt.Sprintf("Expense added successfully (ID: %d)\n", index+1)
 			if string(out) != expected {
 				t.Errorf("expected %q, but got %q instead", expected, string(out))
 			}
 		}
+	})
+
+	t.Run("TestUpdateCMD", func(t *testing.T) {
+		cases := []struct {
+			id          string
+			amount      string
+			description string
+			expected    string
+		}{
+			{
+				id:          "1",
+				amount:      "100",
+				description: "new expense 1",
+				expected:    "Expense updated successfully (ID: 1)\n",
+			},
+			{
+				id:       "4",
+				amount:   "1000",
+				expected: "Expense updated successfully (ID: 4)\n",
+			},
+			{
+				id:          "5",
+				description: "new expense 5",
+				expected:    "Expense updated successfully (ID: 5)\n",
+			},
+		}
+
+		for _, v := range cases {
+			var cmd *exec.Cmd
+			switch {
+			case v.amount != "" && v.description != "":
+				cmd = exec.Command(cmdPath, "update", "--id", v.id, "--amount", v.amount, "--description", v.description)
+			case v.amount != "":
+				cmd = exec.Command(cmdPath, "update", "--id", v.id, "--amount", v.amount)
+			case v.description != "":
+				cmd = exec.Command(cmdPath, "update", "--id", v.id, "--description", v.description)
+			}
+			out, err := cmd.CombinedOutput()
+			if err != nil {
+				fmt.Println(err)
+				t.Fatal(err)
+			}
+
+			if string(out) != v.expected {
+				t.Errorf("expected %q, but got %q instead", v.expected, string(out))
+			}
+		}
+
+	})
+
+	t.Run("TestDeleteCMD", func(t *testing.T) {
+		cmd := exec.Command(cmdPath, "delete", "-id", "5")
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+		expected := "Expense deleted successfully\n"
+		if string(out) != expected {
+			t.Errorf("expected %q, but got %q instead", expected, string(out))
+		}
+		
+		cmd = exec.Command(cmdPath, "delete", "-id", "4")
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(out) != expected {
+			t.Errorf("expected %q, but got %q instead", expected, string(out))
+		}
+		
+		cmd = exec.Command(cmdPath, "delete", "-id", "1")
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(out) != expected {
+			t.Errorf("expected %q, but got %q instead", expected, string(out))
+		}
+		
 	})
 
 }
