@@ -23,7 +23,7 @@ type expense struct {
 
 // String returns the string representation of expense struct.
 func (e expense) String() string {
-	return fmt.Sprintf("%-6d%-14s%-25s$%.2f", e.ID, e.Date.Format("2006-01-02"), e.Description, e.Amount)
+	return fmt.Sprintf("%-6d%-14s%-70s$%.2f", e.ID, e.Date.Format("2006-01-02"), e.Description, e.Amount)
 }
 
 // ExpenseList represents a list of expenses.
@@ -167,13 +167,12 @@ func (e *ExpenseList) Delete(pos int) error {
 
 // List writes the expense list to the provided io.Writer in a tabular format.
 func (e *ExpenseList) List(w io.Writer) {
-	header := fmt.Sprintf("%-6s%-14s%-25s%s\n", "ID", "Date", "Description", "Amount")
+	header := fmt.Sprintf("%-6s%-14s%-70s%s\n", "ID", "Date", "Description", "Amount")
 	var buf bytes.Buffer
 	buf.WriteString(header)
 
-	for _, item := range *e {
-		buf.WriteString(item.String())
-		buf.WriteString("\n")
+	for index, item := range *e {
+		buf.WriteString(fmt.Sprintf("%-6d%-14s%-70s$%.2f\n", index+1, item.Date.Format("2006-01-02"), item.Description, item.Amount))
 	}
 
 	w.Write(buf.Bytes())

@@ -60,28 +60,28 @@ func TestAdd(t *testing.T) {
 		{
 			description: "Demo Expense 1",
 			amount:      100,
-			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-70s$%.2f", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0),
 		},
 
 		{
 			description: "Demo Expense 2",
 			amount:      150,
-			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 2, time.Now().Format("2006-01-02"), "demo expense 2", 150.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-70s$%.2f", 2, time.Now().Format("2006-01-02"), "demo expense 2", 150.0),
 		},
 		{
 			description: "Demo Expense 3",
 			amount:      250,
-			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 3, time.Now().Format("2006-01-02"), "demo expense 3", 250.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-70s$%.2f", 3, time.Now().Format("2006-01-02"), "demo expense 3", 250.0),
 		},
 		{
 			description: "Demo Expense 4",
 			amount:      1150,
-			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 4, time.Now().Format("2006-01-02"), "demo expense 4", 1150.0),
+			expected:    fmt.Sprintf("%-6d%-14s%-70s$%.2f", 4, time.Now().Format("2006-01-02"), "demo expense 4", 1150.0),
 		},
 		{
 			description: "Demo Expense 5",
 			amount:      50.90,
-			expected:    fmt.Sprintf("%-6d%-14s%-25s$%.2f", 5, time.Now().Format("2006-01-02"), "demo expense 5", 50.90),
+			expected:    fmt.Sprintf("%-6d%-14s%-70s$%.2f", 5, time.Now().Format("2006-01-02"), "demo expense 5", 50.90),
 		},
 	}
 
@@ -117,7 +117,7 @@ func TestUpdate(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := fmt.Sprintf("%-6d%-14s%-25s$%.2f", 2, time.Now().Format("2006-01-02"), "new demo expense 2", 500.0)
+	expected := fmt.Sprintf("%-6d%-14s%-70s$%.2f", 2, time.Now().Format("2006-01-02"), "new demo expense 2", 500.0)
 
 	// Assert the second expense item was updated successfully.
 	if expenseList[1].String() != expected {
@@ -150,13 +150,13 @@ func TestDelete(t *testing.T) {
 	}
 
 	// Assert the first is the same.
-	expected := fmt.Sprintf("%-6d%-14s%-25s$%.2f", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0)
+	expected := fmt.Sprintf("%-6d%-14s%-70s$%.2f", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0)
 	if expenseList[0].String() != expected {
 		t.Errorf("expected %q, but got %q instead", expected, expenseList[0].String())
 	}
 
 	// Assert the last expense is the same.
-	expected = fmt.Sprintf("%-6d%-14s%-25s$%.2f", 3, time.Now().Format("2006-01-02"), "demo expense 3", 150.0)
+	expected = fmt.Sprintf("%-6d%-14s%-70s$%.2f", 3, time.Now().Format("2006-01-02"), "demo expense 3", 150.0)
 	if expenseList[1].String() != expected {
 		t.Errorf("expected %q, but got %q instead", expected, expenseList[1].String())
 	}
@@ -197,10 +197,10 @@ func TestList(t *testing.T) {
 	}
 
 	var expectedBuf bytes.Buffer
-	expectedBuf.WriteString(fmt.Sprintf("%-6s%-14s%-25s%s\n", "ID", "Date", "Description", "Amount"))
-	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-25s$%.2f\n", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0))
-	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-25s$%.2f\n", 2, time.Now().Format("2006-01-02"), "demo expense 2", 150.0))
-	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-25s$%.2f\n", 3, time.Now().Format("2006-01-02"), "demo expense 3", 150.0))
+	expectedBuf.WriteString(fmt.Sprintf("%-6s%-14s%-70s%s\n", "ID", "Date", "Description", "Amount"))
+	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-70s$%.2f\n", 1, time.Now().Format("2006-01-02"), "demo expense 1", 100.0))
+	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-70s$%.2f\n", 2, time.Now().Format("2006-01-02"), "demo expense 2", 150.0))
+	expectedBuf.WriteString(fmt.Sprintf("%-6d%-14s%-70s$%.2f\n", 3, time.Now().Format("2006-01-02"), "demo expense 3", 150.0))
 
 	var gotBuf bytes.Buffer
 
