@@ -78,5 +78,25 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+	case "delete":
+		id := deleteCmd.Int("id", 0, "The ID of the expense to delete")
+		if err := deleteCmd.Parse(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		
+		// Delete an expense from the list.
+		if err := expenseList.Delete(*id); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		// Write success message to STDOUT.
+		fmt.Println("Expense deleted successfully")
+		
+		// Save the new list.
+		if err := expenseList.Save(filename); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 }
