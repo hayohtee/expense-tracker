@@ -171,9 +171,8 @@ func (e *ExpenseList) List(w io.Writer) {
 	var buf bytes.Buffer
 	buf.WriteString(header)
 
-	for _, item := range *e {
-		buf.WriteString(item.String())
-		buf.WriteString("\n")
+	for index, item := range *e {
+		buf.WriteString(fmt.Sprintf("%-6d%-14s%-70s$%.2f\n", index+1, item.Date.Format("2006-01-02"), item.Description, item.Amount))
 	}
 
 	w.Write(buf.Bytes())
