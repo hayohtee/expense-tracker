@@ -58,5 +58,25 @@ func main() {
 		}
 		// Write the list of expense to the STDOUT.
 		expenseList.List(os.Stdout)
+	case "summary":
+		month := summaryCmd.Int("month", 0, "The month to generate the summary for")
+		if err := summaryCmd.Parse(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// If month was not specified, simply generate the summary for all expenses
+		// and write to the STDOUT.
+		if *month == 0 {
+			expenseList.Summary(os.Stdout)
+			return
+		}
+
+		// If month was specified then generate summary for the provided month and
+		// write to the STDOUT.
+		if err := expenseList.SummaryForMonth(os.Stdout, *month); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 }
