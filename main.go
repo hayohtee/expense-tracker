@@ -51,5 +51,12 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+	case "list":
+		if err := listCmd.Parse(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		// Write the list of expense to the STDOUT.
+		expenseList.List(os.Stdout)
 	}
 }
