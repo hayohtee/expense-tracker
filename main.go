@@ -36,7 +36,18 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+
+		// Add new expense to the list.
 		if err := expenseList.Add(*description, *amount); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// Write successful message to the STDOUT.
+		fmt.Printf("Expense added successfully (ID: %d)\n", expenseList[len(expenseList)-1].ID)
+
+		// Save the new list.
+		if err := expenseList.Save(filename); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
