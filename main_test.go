@@ -7,9 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 )
-
-const testFileName = ".expense_tracker_test.json"
 
 var binName = "expense-tracker"
 
@@ -71,6 +70,37 @@ func TestExpenseTracker(t *testing.T) {
 		}
 	})
 
+	t.Run("TestSummaryCMD", func(t *testing.T) {
+		cmd := exec.Command(cmdPath, "summary")
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		var totalExpenses float64 = 0
+
+		for _, v := range expenses {
+			totalExpenses += v.amount
+		}
+
+		expected := fmt.Sprintf("Total expenses: $%.2f\n", totalExpenses)
+		if string(out) != expected {
+			t.Errorf("expected %q, but got %q instead", expected, string(out))
+		}
+
+		currentMonth := time.Now().Month()
+		cmd = exec.Command(cmdPath, "summary", "-month", fmt.Sprint(int(currentMonth)))
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected = fmt.Sprintf("Total expenses for %s: $%.2f\n", time.Month(currentMonth).String(), totalExpenses)
+		if string(out) != expected {
+			t.Errorf("expected %q, but got %q instead", expected, string(out))
+		}
+	})
+
 	t.Run("TestUpdateCMD", func(t *testing.T) {
 		cases := []struct {
 			id          string
@@ -129,7 +159,7 @@ func TestExpenseTracker(t *testing.T) {
 		if string(out) != expected {
 			t.Errorf("expected %q, but got %q instead", expected, string(out))
 		}
-		
+
 		cmd = exec.Command(cmdPath, "delete", "-id", "4")
 		out, err = cmd.CombinedOutput()
 		if err != nil {
@@ -138,7 +168,7 @@ func TestExpenseTracker(t *testing.T) {
 		if string(out) != expected {
 			t.Errorf("expected %q, but got %q instead", expected, string(out))
 		}
-		
+
 		cmd = exec.Command(cmdPath, "delete", "-id", "1")
 		out, err = cmd.CombinedOutput()
 		if err != nil {
@@ -147,7 +177,7 @@ func TestExpenseTracker(t *testing.T) {
 		if string(out) != expected {
 			t.Errorf("expected %q, but got %q instead", expected, string(out))
 		}
-		
+
 	})
 
 }
