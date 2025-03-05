@@ -15,14 +15,17 @@ func main() {
 	listCmd := flag.NewFlagSet("list", flag.ExitOnError)
 	summaryCmd := flag.NewFlagSet("summary", flag.ExitOnError)
 	deleteCmd := flag.NewFlagSet("delete", flag.ExitOnError)
+	updateCmd := flag.NewFlagSet("update", flag.ExitOnError)
 
 	description := addCmd.String("description", "", "The description for the expense")
-	amount := addCmd.Float64("amount", 0.0, "The amount for the expense")
+	amount := addCmd.Float64("amount", 0, "The amount for the expense")
+	newDescription := updateCmd.String("description", "", "The new description for the expense")
+	newAmount := updateCmd.Float64("amount", 0, "the new amount for the expense")
 	month := summaryCmd.Int("month", 0, "The month to generate the summary for")
 	id := deleteCmd.Int("id", 0, "The ID of the expense to delete")
 
 	if len(os.Args) < 2 {
-		displayUsage(addCmd, summaryCmd, deleteCmd)
+		displayUsage(addCmd, summaryCmd, updateCmd, deleteCmd)
 		os.Exit(0)
 	}
 
