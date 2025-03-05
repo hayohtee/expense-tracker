@@ -116,6 +116,9 @@ func main() {
 			os.Exit(1)
 		}
 
+		// Write success message to the STDOUT.
+		fmt.Printf("Expense updated successfully (ID: %d)\n", *newID)
+
 		// Save the new expense list.
 		if err := expenseList.Save(filename); err != nil {
 			fmt.Fprintln(os.Stderr, err)
