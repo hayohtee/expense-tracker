@@ -21,6 +21,7 @@ func main() {
 	amount := addCmd.Float64("amount", 0, "The amount for the expense")
 	newDescription := updateCmd.String("description", "", "The new description for the expense")
 	newAmount := updateCmd.Float64("amount", 0, "the new amount for the expense")
+	newID := updateCmd.Int("id", 0, "The ID of the expense to update")
 	month := summaryCmd.Int("month", 0, "The month to generate the summary for")
 	id := deleteCmd.Int("id", 0, "The ID of the expense to delete")
 
@@ -98,6 +99,24 @@ func main() {
 		fmt.Println("Expense deleted successfully")
 
 		// Save the new list.
+		if err := expenseList.Save(filename); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+	case "update":
+		if err := updateCmd.Parse(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// Update the expense based on the supplied ID, description and amount.
+		if err := expenseList.Update(*newID, *newDescription, *newAmount); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		// Save the new expense list.
 		if err := expenseList.Save(filename); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
