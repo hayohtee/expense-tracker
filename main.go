@@ -15,16 +15,30 @@ func main() {
 	listCmd := flag.NewFlagSet("list", flag.ExitOnError)
 	summaryCmd := flag.NewFlagSet("summary", flag.ExitOnError)
 	deleteCmd := flag.NewFlagSet("delete", flag.ExitOnError)
-	
+
 	if len(os.Args) < 2 {
 		flag.Usage()
 		os.Exit(0)
 	}
-	
+
 	// Load the expense list from the file.
 	var expenseList expense.ExpenseList
 	if err := expenseList.Load(filename); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
+	}
+
+	switch os.Args[1] {
+	case "add":
+		description := addCmd.String("description", "", "The description for the expense")
+		amount := addCmd.Float64("amount", 0.0, "The amount for the expense")
+		if err := addCmd.Parse(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		if err := expenseList.Add(*description, *amount); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 }
