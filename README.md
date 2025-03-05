@@ -55,3 +55,7 @@ $ expense-tracker summary
 $ expense-tracker summary --month 8
 # Total expenses for August: $20
 ```
+
+### Challenge URL
+Solution to the [Task Tracker](https://roadmap.sh/projects/expense-tracker) project on [roadmap.sh](https://roadmap.sh)
+
